@@ -138,3 +138,20 @@ WHERE o.Status = 'Delivered'
 GROUP BY FORMAT(o.OrderDate, 'yyyy-MM')
 ORDER BY Month;
 GO
+
+-- =====================================================
+-- QUERY 6: Order Fulfillment Analysis
+-- Skills: DATEDIFF, Subquery, AVG, Status Analysis
+-- =====================================================
+SELECT 
+    Status,
+    COUNT(*) AS OrderCount,
+    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM Orders), 2) AS Percentage,
+    AVG(CASE 
+        WHEN ShippingDate IS NOT NULL 
+        THEN DATEDIFF(DAY, OrderDate, ShippingDate) 
+    END) AS AvgFulfillmentDays
+FROM Orders
+GROUP BY Status
+ORDER BY OrderCount DESC;
+GO
