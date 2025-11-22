@@ -196,3 +196,34 @@ GROUP BY c.CustomerID, c.CustomerName, c.Region
 HAVING COUNT(o.OrderID) > 1
 ORDER BY TotalOrders DESC;
 GO
+
+-- =====================================================
+-- QUERY 9: Discount Impact Analysis
+-- Skills: CASE, Grouping, Business Logic
+-- =====================================================
+SELECT 
+    CASE 
+        WHEN od.Discount = 0 THEN 'No Discount'
+        WHEN od.Discount <= 0.05 THEN '1-5%'
+        WHEN od.Discount <= 0.10 THEN '6-10%'
+        WHEN od.Discount <= 0.15 THEN '11-15%'
+        ELSE '16%+'
+    END AS DiscountBracket,
+    COUNT(DISTINCT od.OrderID) AS Orders,
+    SUM(od.Quantity) AS UnitsSold,
+    ROUND(SUM(od.Quantity * p.UnitPrice * (1 - od.Discount)), 2) AS ActualRevenue,
+    ROUND(SUM(od.Quantity * p.UnitPrice * od.Discount), 2) AS DiscountGiven
+FROM OrderDetails od
+JOIN Products p ON od.ProductID = p.ProductID
+JOIN Orders o ON od.OrderID = o.OrderID
+WHERE o.Status = 'Delivered'
+GROUP BY 
+    CASE 
+        WHEN od.Discount = 0 THEN 'No Discount'
+        WHEN od.Discount <= 0.05 THEN '1-5%'
+        WHEN od.Discount <= 0.10 THEN '6-10%'
+        WHEN od.Discount <= 0.15 THEN '11-15%'
+        ELSE '16%+'
+    END
+ORDER BY ActualRevenue DESC;
+GO
