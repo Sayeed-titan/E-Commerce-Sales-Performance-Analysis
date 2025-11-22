@@ -56,3 +56,28 @@ WHERE o.Status = 'Delivered'
 GROUP BY p.ProductID, p.ProductName, p.Category
 ORDER BY TotalRevenue DESC;
 GO
+
+-- =====================================================
+-- QUERY 3: Regional Performance Analysis
+-- Skills: Multiple Joins, CASE Statement, Grouping
+-- =====================================================
+SELECT 
+    c.Region,
+    COUNT(DISTINCT c.CustomerID) AS TotalCustomers,
+    COUNT(DISTINCT o.OrderID) AS TotalOrders,
+    ROUND(SUM(od.Quantity * p.UnitPrice * (1 - od.Discount)), 2) AS TotalRevenue,
+    ROUND(AVG(od.Quantity * p.UnitPrice * (1 - od.Discount)), 2) AS AvgOrderValue,
+    CASE 
+        WHEN SUM(od.Quantity * p.UnitPrice * (1 - od.Discount)) > 300000 THEN 'High'
+        WHEN SUM(od.Quantity * p.UnitPrice * (1 - od.Discount)) > 150000 THEN 'Medium'
+        ELSE 'Low'
+    END AS PerformanceTier
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+JOIN OrderDetails od ON o.OrderID = od.OrderID
+JOIN Products p ON od.ProductID = p.ProductID
+WHERE o.Status = 'Delivered'
+GROUP BY c.Region
+ORDER BY TotalRevenue DESC;
+GO
+
