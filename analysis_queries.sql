@@ -116,3 +116,25 @@ SELECT
 FROM CustomerMetrics
 ORDER BY TotalSpent DESC;
 GO
+
+-- =====================================================
+-- QUERY 5: Product Category Performance by Month
+-- Skills: PIVOT concept, Aggregation, Formatting
+-- =====================================================
+SELECT 
+    FORMAT(o.OrderDate, 'yyyy-MM') AS Month,
+    SUM(CASE WHEN p.Category = 'Electronics' 
+        THEN od.Quantity * p.UnitPrice * (1 - od.Discount) ELSE 0 END) AS Electronics,
+    SUM(CASE WHEN p.Category = 'Furniture' 
+        THEN od.Quantity * p.UnitPrice * (1 - od.Discount) ELSE 0 END) AS Furniture,
+    SUM(CASE WHEN p.Category = 'Stationery' 
+        THEN od.Quantity * p.UnitPrice * (1 - od.Discount) ELSE 0 END) AS Stationery,
+    SUM(CASE WHEN p.Category = 'Accessories' 
+        THEN od.Quantity * p.UnitPrice * (1 - od.Discount) ELSE 0 END) AS Accessories
+FROM Orders o
+JOIN OrderDetails od ON o.OrderID = od.OrderID
+JOIN Products p ON od.ProductID = p.ProductID
+WHERE o.Status = 'Delivered'
+GROUP BY FORMAT(o.OrderDate, 'yyyy-MM')
+ORDER BY Month;
+GO
