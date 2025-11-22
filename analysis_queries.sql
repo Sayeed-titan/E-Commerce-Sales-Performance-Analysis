@@ -155,3 +155,25 @@ FROM Orders
 GROUP BY Status
 ORDER BY OrderCount DESC;
 GO
+
+-- =====================================================
+-- QUERY 7: Year-over-Year Comparison (Subquery)
+-- Skills: Subquery, Date Functions, Comparison
+-- =====================================================
+SELECT 
+    'Current Period' AS Period,
+    COUNT(DISTINCT o.OrderID) AS Orders,
+    ROUND(SUM(od.Quantity * p.UnitPrice * (1 - od.Discount)), 2) AS Revenue,
+    ROUND(SUM(od.Quantity * p.UnitPrice * (1 - od.Discount)) / 
+        (SELECT SUM(od2.Quantity * p2.UnitPrice * (1 - od2.Discount))
+         FROM Orders o2
+         JOIN OrderDetails od2 ON o2.OrderID = od2.OrderID
+         JOIN Products p2 ON od2.ProductID = p2.ProductID
+         WHERE o2.Status = 'Delivered') * 100, 2) AS RevenueSharePercent
+FROM Orders o
+JOIN OrderDetails od ON o.OrderID = od.OrderID
+JOIN Products p ON od.ProductID = p.ProductID
+WHERE o.Status = 'Delivered'
+    AND o.OrderDate >= DATEADD(MONTH, -18, GETDATE());
+	GO
+
