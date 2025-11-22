@@ -227,3 +227,32 @@ GROUP BY
     END
 ORDER BY ActualRevenue DESC;
 GO
+
+-- =====================================================
+-- QUERY 10: Executive Summary Dashboard Data
+-- Skills: UNION ALL, Multiple Aggregations
+-- =====================================================
+SELECT 'Total Revenue' AS Metric, 
+    CAST(ROUND(SUM(od.Quantity * p.UnitPrice * (1 - od.Discount)), 0) AS VARCHAR) AS Value
+FROM Orders o
+JOIN OrderDetails od ON o.OrderID = od.OrderID
+JOIN Products p ON od.ProductID = p.ProductID
+WHERE o.Status = 'Delivered'
+UNION ALL
+SELECT 'Total Orders', CAST(COUNT(DISTINCT OrderID) AS VARCHAR)
+FROM Orders WHERE Status = 'Delivered'
+UNION ALL
+SELECT 'Total Customers', CAST(COUNT(DISTINCT CustomerID) AS VARCHAR)
+FROM Customers
+UNION ALL
+SELECT 'Avg Order Value', 
+    CAST(ROUND(AVG(OrderTotal), 2) AS VARCHAR)
+FROM (
+    SELECT o.OrderID, SUM(od.Quantity * p.UnitPrice * (1 - od.Discount)) AS OrderTotal
+    FROM Orders o
+    JOIN OrderDetails od ON o.OrderID = od.OrderID
+    JOIN Products p ON od.ProductID = p.ProductID
+    WHERE o.Status = 'Delivered'
+    GROUP BY o.OrderID
+) AS OrderTotals;
+GO
