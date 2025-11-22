@@ -34,3 +34,25 @@ SELECT
 FROM MonthlySales
 ORDER BY Month;
 GO
+
+-- =====================================================
+-- QUERY 2: Top 5 Products by Revenue with Profit Margin
+-- Skills: Multiple Joins, Subquery, TOP, Calculations
+-- =====================================================
+SELECT TOP 5
+    p.ProductName,
+    p.Category,
+    SUM(od.Quantity) AS UnitsSold,
+    ROUND(SUM(od.Quantity * p.UnitPrice * (1 - od.Discount)), 2) AS TotalRevenue,
+    ROUND(SUM(od.Quantity * (p.UnitPrice - p.Cost) * (1 - od.Discount)), 2) AS TotalProfit,
+    ROUND(
+        (SUM(od.Quantity * (p.UnitPrice - p.Cost)) / 
+        SUM(od.Quantity * p.UnitPrice)) * 100, 2
+    ) AS ProfitMarginPercent
+FROM Products p
+JOIN OrderDetails od ON p.ProductID = od.ProductID
+JOIN Orders o ON od.OrderID = o.OrderID
+WHERE o.Status = 'Delivered'
+GROUP BY p.ProductID, p.ProductName, p.Category
+ORDER BY TotalRevenue DESC;
+GO
