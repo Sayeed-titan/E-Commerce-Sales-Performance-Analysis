@@ -42,5 +42,27 @@ INSERT INTO Customers VALUES
 (25, 'Gaurav Malhotra', 'gaurav@email.com', 'Noida', 'North', '2024-01-03');
 GO
 -- View Data --
-SELECT * FROM Customers;
+--SELECT * FROM Customers;
+--GO
+
+-- Products
+INSERT INTO Products VALUES
+(1, 'Laptop Pro 15', 'Electronics', 75000.00, 55000.00),
+(2, 'Wireless Mouse', 'Electronics', 1500.00, 800.00),
+(3, 'USB-C Hub', 'Electronics', 2500.00, 1200.00),
+(4, 'Office Chair', 'Furniture', 12000.00, 7500.00),
+(5, 'Standing Desk', 'Furniture', 25000.00, 15000.00),
+(6, 'Monitor 27inch', 'Electronics', 22000.00, 14000.00),
+(7, 'Keyboard Mechanical', 'Electronics', 5000.00, 2800.00),
+(8, 'Webcam HD', 'Electronics', 3500.00, 1800.00),
+(9, 'Desk Lamp LED', 'Furniture', 1800.00, 900.00),
+(10, 'Notebook Set', 'Stationery', 500.00, 200.00),
+(11, 'Pen Premium', 'Stationery', 350.00, 120.00),
+(12, 'Headphones BT', 'Electronics', 8000.00, 4500.00),
+(13, 'Mouse Pad XL', 'Electronics', 800.00, 300.00),
+(14, 'Cable Organizer', 'Accessories', 600.00, 250.00),
+(15, 'Laptop Stand', 'Accessories', 2200.00, 1100.00);
 GO
+
+--SELECT * FROM Products;
+--GO
