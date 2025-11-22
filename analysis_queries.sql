@@ -81,3 +81,38 @@ GROUP BY c.Region
 ORDER BY TotalRevenue DESC;
 GO
 
+-- =====================================================
+-- QUERY 4: Customer Segmentation (RFM Analysis)
+-- Skills: CTE, Multiple Aggregations, NTILE Window
+-- =====================================================
+WITH CustomerMetrics AS (
+    SELECT 
+        c.CustomerID,
+        c.CustomerName,
+        c.Region,
+        DATEDIFF(DAY, MAX(o.OrderDate), GETDATE()) AS DaysSinceLastOrder,
+        COUNT(DISTINCT o.OrderID) AS OrderFrequency,
+        SUM(od.Quantity * p.UnitPrice * (1 - od.Discount)) AS TotalSpent
+    FROM Customers c
+    JOIN Orders o ON c.CustomerID = o.CustomerID
+    JOIN OrderDetails od ON o.OrderID = od.OrderID
+    JOIN Products p ON od.ProductID = p.ProductID
+    WHERE o.Status = 'Delivered'
+    GROUP BY c.CustomerID, c.CustomerName, c.Region
+)
+SELECT 
+    CustomerID,
+    CustomerName,
+    Region,
+    DaysSinceLastOrder AS Recency,
+    OrderFrequency AS Frequency,
+    ROUND(TotalSpent, 2) AS Monetary,
+    CASE 
+        WHEN OrderFrequency >= 3 AND TotalSpent > 100000 THEN 'VIP'
+        WHEN OrderFrequency >= 2 AND TotalSpent > 50000 THEN 'Loyal'
+        WHEN DaysSinceLastOrder > 90 THEN 'At Risk'
+        ELSE 'Regular'
+    END AS CustomerSegment
+FROM CustomerMetrics
+ORDER BY TotalSpent DESC;
+GO
