@@ -17,13 +17,13 @@ GO
 
 -- Create Tables ---
 
-CREATE TABLE Customers(
-	CustomerID INT PRIMARY KEY,
-	CustomerName VARCHAR(100),
-	Email VARCHAR(100),
-	City VARCHAR(50),
-	Region VARCHAR(50),
-	Cost DECIMAL(10,2)
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    CustomerName VARCHAR(100),
+    Email VARCHAR(100),
+    City VARCHAR(50),
+    Region VARCHAR(50),
+    JoinDate DATE
 );
 
 CREATE TABLE Products (
@@ -50,3 +50,12 @@ CREATE TABLE OrderDetails (
     Discount DECIMAL(5,2)
 );
 
+-- Drop Tables -- 
+--DROP TABLE Customers;
+--GO
+--DROP TABLE Products;
+--GO
+--DROP TABLE Orders;
+--GO
+--DROP TABLE OrderDetails;
+--GO
