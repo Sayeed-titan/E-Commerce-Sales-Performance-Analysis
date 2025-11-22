@@ -177,3 +177,22 @@ WHERE o.Status = 'Delivered'
     AND o.OrderDate >= DATEADD(MONTH, -18, GETDATE());
 	GO
 
+	-- =====================================================
+-- QUERY 8: Repeat Customer Analysis
+-- Skills: HAVING, COUNT, Subquery in SELECT
+-- =====================================================
+SELECT 
+    c.CustomerID,
+    c.CustomerName,
+    c.Region,
+    COUNT(o.OrderID) AS TotalOrders,
+    MIN(o.OrderDate) AS FirstOrder,
+    MAX(o.OrderDate) AS LastOrder,
+    DATEDIFF(DAY, MIN(o.OrderDate), MAX(o.OrderDate)) AS CustomerLifespanDays
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+WHERE o.Status = 'Delivered'
+GROUP BY c.CustomerID, c.CustomerName, c.Region
+HAVING COUNT(o.OrderID) > 1
+ORDER BY TotalOrders DESC;
+GO
